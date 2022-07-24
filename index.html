@@ -13,31 +13,50 @@
 <body>
     <div id="content">
 
-        <!-- NAV-BAR -->
-        <nav class="navbar navbar-light bg-light">
-          <div class="container-fluid">
-            <p class="fs-6" id="title_header"></p>
-            <div class="d-flex">
-              <label class="form-label me-2">Provincia:</label>
-              <select class="form-select me-5" name="provincia" id="provincia" placeholder="Selecciona una provincia..." onchange="filter_provincia(this)">
-                <option value="">Selecciona una provincia</option>
-              </select>
-              <!--  -->
-              <label class="form-label me-2">Localidad:</label>
-              <input class="form-control me-2" type="search" id="localidad" placeholder="Introduce una localidad" aria-label="Search">
-              <button class="btn btn-outline-success me-5" type="submit" onclick="filter_localidad()">Buscar</button>
-            </div>
-          </div>
-        </nav>
-        <!-- #NAV-BAR -->
-        
-        <!-- ITEMS -->
-        <div id="list-item" class="mt-5 container">
-          <div class="row row-cols-1 row-cols-md-3 g-4 container" id="item" >
-            
-          </div><!-- #ROW-COL -->
+
+      <div class="container mt-5">
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10">
+                <div class="card bg-light p-3 py-4">
+                    <h5>Una forma simple de comprar carburante barato</h5>
+                    <p class="fs-6" id="title_header"></p>
+                    <div class="row g-3 mt-2">
+
+                        <div class="col-md-4">
+                          <select class="form-select me-5" name="provincia" id="provincia" placeholder="Selecciona una provincia..." onchange="filter_provincia(this)">
+                            <option value="">Selecciona una provincia</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="localidad" placeholder="Introduce una localidad">
+                        </div>
+
+                        <div class="col-md-3 text-center">
+                          <button class="btn btn-outline-success btn-lg w-100" type="submit" onclick="filter_localidad()">Buscar</button> 
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                          <hr>
+                          <button class="btn btn-danger m-2" type="submit" onclick="sort_caburante(0)">Gasoleo A más bajo</button> 
+                          <button class="btn btn-warning m-2" type="submit" onclick="sort_caburante(1)">Gasolina 95 más bajo</button> 
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </div>  
         </div>
-        <!-- #ITEMS -->
+      </div>
+        
+      <!-- ITEMS -->
+      <div id="list-item" class="mt-5 container">
+        <div class="row row-cols-1 row-cols-md-3 g-4 container" id="item" >
+          
+        </div><!-- #ROW-COL -->
+      </div>
+      <!-- #ITEMS -->
     </div>
     <!-- ---------------------------------------------------------- -->
     <script>
@@ -57,6 +76,7 @@
       };
     
       let g_data; //JSON de gasolineras
+      let temp_g_data;
 
       getJSON('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/',
       function(err, data) {
@@ -89,8 +109,17 @@
         resolve_items(result);
       }
 
+      function sort_caburante(option){
+        if(option==0)
+          temp_g_data.sort((a, b) => (a["Precio Gasoleo A"] > b["Precio Gasoleo A"]) ? 1 : -1)
+        else
+          temp_g_data.sort((a, b) => (a["Precio Gasolina 95 E5"] > b["Precio Gasolina 95 E5"]) ? 1 : -1)
+        resolve_items(temp_g_data)
+      }
+
       //Resolve result(Imprime los resultados de las gasolineras)
       function resolve_items(result){
+        temp_g_data = result;
         document.getElementById('item').innerHTML=""
 
 
