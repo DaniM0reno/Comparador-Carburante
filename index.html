@@ -10,15 +10,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/41e39eae2a.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <div id="content">
-
-
+<body style="background: #00ff4c40;"> 
+    <div id="content" class="mb-5">
       <div class="container mt-5">
 
         <div class="row d-flex justify-content-center">
             <div class="col-md-10">
-                <div class="card bg-light p-3 py-4">
+                <div class="card bg-light p-3 py-4 border border-success">
                     <h5>Una forma simple de comprar carburante barato</h5>
                     <p class="fs-6" id="title_header"></p>
                     <div class="row g-3 mt-2">
@@ -57,7 +55,21 @@
         </div><!-- #ROW-COL -->
       </div>
       <!-- #ITEMS -->
+      <div class="container h-100">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top border-dark">
+          <div class="col-md-4 d-flex align-items-center text-center">
+            <b>© 2022 Copyright
+              <a href="https://github.com/DaniM0reno" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+            
+            <span class="mb-3 mb-md-0 text-muted">DanielM0reno</span>
+          </a></b>
+          </div>
+        </footer>
+      </div>
     </div>
+
+
+    
     <!-- ---------------------------------------------------------- -->
     <script>
       var getJSON = function(url, callback) {
@@ -125,6 +137,7 @@
 
         result.forEach(item => 
           document.getElementById('item').innerHTML += 
+            ' <a class="text-muted text-decoration-none" href="https://www.google.com/maps/search/?api=1&query='+item.Dirección+'" target="_blank">'+
             '<div class="col">'+
             '<div class="card h-100 border-dark ">'+
             '<div class="card-header">'+
@@ -141,7 +154,9 @@
             '<h5 class="text-muted">'+
             'Precio Gasoleo A:\t\t'+item["Precio Gasoleo A"]+' €<br>'+
             'Precio Gasolina 95:\t\t'+ item["Precio Gasolina 95 E5"]+ '€<br>'+
-            '</h5></div></div></div>')}
+            '</h5></div></div></div>'+
+            '</a>')}
     </script>
+
 </body>
 </html>
