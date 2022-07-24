@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/41e39eae2a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="content">
+
+        <!-- NAV-BAR -->
+        <nav class="navbar navbar-light bg-light">
+          <div class="container-fluid">
+            <p class="fs-6" id="title_header"></p>
+            <div class="d-flex">
+              <label class="form-label me-2">Provincia:</label>
+              <select class="form-select me-5" name="provincia" id="provincia" placeholder="Selecciona una provincia..." onchange="filter_provincia(this)">
+                <option value="">Selecciona una provincia</option>
+              </select>
+              <!--  -->
+              <label class="form-label me-2">Localidad:</label>
+              <input class="form-control me-2" type="search" id="localidad" placeholder="Introduce una localidad" aria-label="Search">
+              <button class="btn btn-outline-success me-5" type="submit" onclick="filter_localidad()">Buscar</button>
+            </div>
+          </div>
+        </nav>
+        <!-- #NAV-BAR -->
+        
+        <!-- ITEMS -->
+        <div id="list-item" class="mt-5 container">
+          <div class="row row-cols-1 row-cols-md-3 g-4 container" id="item" >
+            
+          </div><!-- #ROW-COL -->
+        </div>
+        <!-- #ITEMS -->
+    </div>
+    <!-- ---------------------------------------------------------- -->
+    <script>
+      var getJSON = function(url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'json';
+      xhr.onload = function() {
+        var status = xhr.status;
+        if (status === 200) {
+          callback(null, xhr.response);
+        } else {
+          callback(status, xhr.response);
+        }
+      };
+      xhr.send();
+      };
+    
+      let g_data; //JSON de gasolineras
+
+      getJSON('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/',
+      function(err, data) {
+        if (err !== null) {
+          alert('Something went wrong: ' + err);
+        } else {
+          g_data = data;
+          console.log(g_data)
+          initial_data()
+        }
+      });
+
+      function initial_data(){
+          document.getElementById('title_header').innerHTML = 'Ultima actualización: '+g_data.Fecha;
+          // Buscador de provincias
+          const distinctProvincias = [...new Set(g_data.ListaEESSPrecio.map(x => x.Provincia))]
+          distinctProvincias.forEach(item=>document.getElementById('provincia').innerHTML += ' <option value="'+ item +'">'+ item +'</option>');
+      }
+
+      //Filter & Sort
+      function filter_provincia(provincia){
+        console.log(provincia.value)
+        const result = g_data.ListaEESSPrecio.filter(item => item.Provincia == provincia.value);
+        resolve_items(result);
+      }
+
+      function filter_localidad(){
+        const value = document.getElementById('localidad').value.toUpperCase();
+        const result = g_data.ListaEESSPrecio.filter(item => item.Localidad == value);
+        resolve_items(result);
+      }
+
+      //Resolve result(Imprime los resultados de las gasolineras)
+      function resolve_items(result){
+        document.getElementById('item').innerHTML=""
+
+
+        result.forEach(item => 
+          document.getElementById('item').innerHTML += 
+            '<div class="col">'+
+            '<div class="card h-100 border-dark ">'+
+            '<div class="card-header">'+
+            '<h3 class="card-title text-center">'+item.Rótulo+'</h3>'+
+            '</div>'+
+            '<div class="card-body">'+
+            '<p class="card-text">'+
+              'Provincia:\t\t'+item.Provincia+'<br>'+
+              'Localidad:\t\t'+item.Localidad+'<br>'+
+              'Dirección:\t\t'+item.Dirección+'<br>'+
+            '</p>'+
+            '</div>'+
+            '<div class="card-footer text-center" id="content_carburante">'+
+            '<h5 class="text-muted">'+
+            'Precio Gasoleo A:\t\t'+item["Precio Gasoleo A"]+' €<br>'+
+            'Precio Gasolina 95:\t\t'+ item["Precio Gasolina 95 E5"]+ '€<br>'+
+            '</h5></div></div></div>')}
+    </script>
+</body>
+</html>
