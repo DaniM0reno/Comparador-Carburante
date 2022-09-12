@@ -30,6 +30,7 @@
       background-position: center;
     }
   </style>
+
     <div id="content" class="mb-5 page">
       <div class="container mt-5">
 
@@ -52,12 +53,14 @@
 
                         <div class="col-md-3 text-center">
                           <button class="btn btn-outline-success btn-lg w-100" type="submit" onclick="filter_localidad()">Buscar</button> 
+                          <button class="btn btn-success btn-lg w-100 mt-2" type="submit" onclick="funcionLocate()">Obtener ubicacion</button>  
+
                         </div>
 
                         <div class="col-md-12 text-center">
                           <hr>
                           <button class="btn btn-danger m-2" type="submit" onclick="sort_caburante(0)">Gasoleo A más bajo</button> 
-                          <button class="btn btn-warning m-2" type="submit" onclick="sort_caburante(1)">Gasolina 95 más bajo</button> 
+                          <button class="btn btn-warning m-2" type="submit" onclick="sort_caburante(1)">Gasolina 95 más bajo</button>
                         </div>
 
                     </div>
@@ -116,6 +119,11 @@
           alert('Something went wrong: ' + err);
         } else {
           g_data = data;
+          for( var i = 0; i < g_data.ListaEESSPrecio.length; i++){ 
+              if ( g_data.ListaEESSPrecio[i]["Precio Gasoleo A"] == "" && g_data.ListaEESSPrecio[i]["Precio Gasolina 95 E5"] == "") { 
+                g_data.ListaEESSPrecio.splice(i, 1); 
+              }
+          }
           console.log(g_data)
           initial_data()
         }
@@ -196,6 +204,30 @@
             setVisible('.page', true);
             setVisible('#loading', false);
           });
+
+          // Obtener localizacion
+          const funcionLocate = () => {
+            if (!"geolocation" in navigator) {
+              return alert("Tu navegador no soporta el acceso a la ubicación. Intenta con otro");
+            }
+
+            const onUbicacionConcedida = ubicacion => {
+              console.log("Tengo la ubicación: ", ubicacion);
+            }
+          
+            const onErrorDeUbicacion = err => {
+              console.log("Error obteniendo ubicación: ", err);
+            }
+
+            const opcionesDeSolicitud = {
+              enableHighAccuracy: true, // Alta precisión
+              maximumAge: 0, // No queremos caché
+              timeout: 5000 // Esperar solo 5 segundos
+            };
+            // Solicitar
+            navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
+
+          };
     </script>
 
 </body>
